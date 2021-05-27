@@ -3,16 +3,16 @@ import Data.Char
 
 -- problem definition (edit this)
 
-possibleActions = [Add 2, RShift, A2B 12 0] -- refer to FunName at line 14
-maxSteps = 5
-start = 1001
-goal = 210
+possibleActions = [Add 5, Mir, Sum] -- refer to FunName at line 14
+maxSteps = 6
+start = 91
+goal = 19
 
 
 -- implementation of Calculator: The Game operations
 
 data FunName = Mul Int | Div Int | A2B Int Int | Rev | Add Int | 
-               Ins Int | Rem | Sum | Sign | Pow Int | RShift | LShift
+               Ins Int | Rem | Sum | Sign | Pow Int | RShift | LShift | Mir
     deriving(Show, Eq)
 
 reverseNum :: Int -> Int
@@ -50,6 +50,11 @@ lShift x = let digits = if x >= 0 then show x else drop 1 $ show x
                sign   = if x >= 0 then ' ' else '-'
            in  read $ drop 1 digits ++ [head digits]
 
+mirror :: Int -> Int
+mirror x = read $ str ++ revStr
+    where str    = show x
+          revStr = reverse . show $ x
+
 -- numbers bigger than 6 digits break the game
 capAt6Digits :: Int -> Maybe Int
 capAt6Digits x
@@ -70,6 +75,7 @@ executeFun name x = case name of
     Pow y   -> capAt6Digits $ x ^ y
     RShift  -> Just $ rShift x
     LShift  -> Just $ lShift x
+    Mir     -> capAt6Digits $ mirror x
 
 
 -- functions related to actually getting the answer
