@@ -3,10 +3,10 @@ import Data.Char
 
 -- problem definition (edit this)
 
-possibleActions = [Add 5, Mir, Sum] -- refer to FunName at line 14
-maxSteps = 6
-start = 91
-goal = 19
+possibleActions = [Mul 3, Add 8, Add 2, Rev, Mir] -- refer to FunName at line 14
+maxSteps = 8
+start = -1
+goal = 2020
 
 
 -- implementation of Calculator: The Game operations
@@ -16,7 +16,9 @@ data FunName = Mul Int | Div Int | A2B Int Int | Rev | Add Int |
     deriving(Show, Eq)
 
 reverseNum :: Int -> Int
-reverseNum = read . reverse . show
+reverseNum x
+    | x >= 0    = read . reverse . show $ x
+    | otherwise = - (read . reverse . tail . show $ x)
 
 aToB :: Int -> Int -> Int -> Int
 aToB x a b = toNum . replace (toText a) (toText b) . toText $ x
@@ -37,6 +39,9 @@ removeDigit x = if null cut then 0 else read cut
     where str = show x
           cut = take (length str - 1) str
 
+-- currently it breaks on negative numbers
+-- I haven't seen a case with negative numbers and this function in the game
+-- so I'm not sure how it should act
 sumDigits :: Int -> Int
 sumDigits = sum . map digitToInt . show
 
@@ -53,7 +58,8 @@ lShift x = let digits = if x >= 0 then show x else drop 1 $ show x
 mirror :: Int -> Int
 mirror x = read $ str ++ revStr
     where str    = show x
-          revStr = reverse . show $ x
+          revStr = if x >= 0 then reverse . show $ x
+                             else reverse . tail . show $ x
 
 -- numbers bigger than 6 digits break the game
 capAt6Digits :: Int -> Maybe Int
